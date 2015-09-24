@@ -27,7 +27,7 @@ xhr.onreadystatechange = function() {
 	if(xhr.readyState === DONE) {
 		var links = xhr.responseText.split('\n');
 		document.getElementById('response').innerHTML = xhr.responseText;
-		var lineStart = 'RewriteCond %{HTTP_REFERER} ^http(s)?://(www\.)?';
+		var lineStart = 'RewriteCond %{HTTP_REFERER} ^http(s)?://(www\\.)?';
 		var lineEnd = '.*$ [NC,OR]';
 		var htaccess = 'Rewrite Engine on<br>';
 		links.forEach(function(url) {
