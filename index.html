@@ -1,0 +1,37 @@
+<html>
+<head>
+<link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+<style>
+ body { font-family: 'Open Sans', sans-serif; }
+</style>
+</head>
+<body>
+<h1>Copy and paste into your htaccess file to prevent Referral Spam!!!</h1>
+
+
+
+<div id="response">
+</div>
+
+<!-- https://github.com/piwik/referrer-spam-blacklist/blob/master/spammers.txt -->
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script>
+
+var url = 'https://raw.githubusercontent.com/piwik/referrer-spam-blacklist/master/spammers.txt';
+
+$(document).ready(function() {
+	$.get(url).done(function (data) {
+		var spams = data.split('\n');
+		console.table(spams);
+		var beginning = 'RewriteCond %{HTTP_REFERER} ^http(s)?://(www\.)?';
+		var end = '.*$ [NC,OR]';
+		var returnData = 'Rewrite Engine on<br>';
+		spams.forEach(function(spam) {
+			returnData = returnData + beginning +  spam + end + '<br>';
+		});
+		returnData = returnData + 'RewriteRule .* - [F,L]';
+		$('#response').html(returnData);
+	});
+});
+</script>
