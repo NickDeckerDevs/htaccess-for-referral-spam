@@ -14,24 +14,29 @@
 </div>
 
 <!-- https://github.com/piwik/referrer-spam-blacklist/blob/master/spammers.txt -->
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script>
 
 var url = 'https://raw.githubusercontent.com/piwik/referrer-spam-blacklist/master/spammers.txt';
 
-$(document).ready(function() {
-	$.get(url).done(function (data) {
-		var spams = data.split('\n');
-		console.table(spams);
-		var beginning = 'RewriteCond %{HTTP_REFERER} ^http(s)?://(www\.)?';
-		var end = '.*$ [NC,OR]';
-		var returnData = 'Rewrite Engine on<br>';
-		spams.forEach(function(spam) {
-			returnData = returnData + beginning +  spam + end + '<br>';
+var xhr = new XMLHttpRequest();
+xhr.open('GET', url);
+xhr.send(null);
+xhr.onreadystatechange = function() {
+	var DONE = 4;
+	var OK = 200;
+	if(xhr.readyState === DONE) {
+		var links = xhr.responseText.split('\n');
+		document.getElementById('response').innerHTML = xhr.responseText;
+		var lineStart = 'RewriteCond %{HTTP_REFERER} ^http(s)?://(www\.)?';
+		var lineEnd = '.*$ [NC,OR]';
+		var htaccess = 'Rewrite Engine on<br>';
+		links.forEach(function(url) {
+			htaccess += lineStart + url + lineEnd + '<br>';
 		});
-		returnData = returnData + 'RewriteRule .* - [F,L]';
-		$('#response').html(returnData);
-	});
-});
+		htaccess += 'RewriteRule .* - [F,L]';
+		document.getElementById('response').innerHTML = htaccess;
+	} else {
+		document.getElementById('response').innerHTML = 'Error: ' + xhr.status;
+	}
+}
 </script>
